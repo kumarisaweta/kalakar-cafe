@@ -11,7 +11,6 @@ export default function PageTransition({
 }) {
   const pathname = usePathname();
   const containerRef = useRef<HTMLDivElement>(null);
-  const splashRef = useRef<HTMLDivElement>(null);
   const isFirstMount = useRef(true);
   const [splashKey, setSplashKey] = useState(0);
   const [showSplash, setShowSplash] = useState(false);
@@ -35,11 +34,7 @@ export default function PageTransition({
 
     gsap.fromTo(
       container,
-      {
-        opacity: 0,
-        y: 40,
-        filter: "blur(10px)",
-      },
+      { opacity: 0, y: 40, filter: "blur(10px)" },
       {
         opacity: 1,
         y: 0,
@@ -54,15 +49,6 @@ export default function PageTransition({
     return () => clearTimeout(timer);
   }, [pathname]);
 
-  const droplets = Array.from({ length: 12 }, (_, i) => ({
-    id: i,
-    x: 20 + Math.random() * 60,
-    y: 20 + Math.random() * 60,
-    size: 8 + Math.random() * 20,
-    delay: Math.random() * 0.2,
-    duration: 0.8 + Math.random() * 0.4,
-  }));
-
   return (
     <>
       <div ref={containerRef} className="will-change-[opacity,transform,filter]">
@@ -72,121 +58,119 @@ export default function PageTransition({
       {showSplash && (
         <div
           key={splashKey}
-          ref={splashRef}
           className="pointer-events-none fixed inset-0 z-[9997] overflow-hidden"
         >
-          <div className="splash-main absolute top-0 right-0">
-            <svg
-              width="400"
-              height="400"
-              viewBox="0 0 400 400"
-              className="opacity-90"
-            >
+          {/* Top right coffee splash */}
+          <div
+            className="absolute top-0 right-0"
+            style={{
+              width: "500px",
+              height: "500px",
+              animation: "splashTopRight 1.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
+            }}
+          >
+            <svg viewBox="0 0 500 500" width="500" height="500">
               <defs>
-                <radialGradient id="coffeeGrad" cx="70%" cy="30%">
+                <radialGradient id="cg1" cx="70%" cy="30%">
                   <stop offset="0%" stopColor="#5C3D2E" stopOpacity="0.95" />
-                  <stop offset="50%" stopColor="#3E2723" stopOpacity="0.8" />
-                  <stop offset="100%" stopColor="#1A0E08" stopOpacity="0.4" />
+                  <stop offset="50%" stopColor="#3E2723" stopOpacity="0.85" />
+                  <stop offset="100%" stopColor="#1A0E08" stopOpacity="0.3" />
                 </radialGradient>
-                <radialGradient id="creamGrad" cx="60%" cy="40%">
-                  <stop offset="0%" stopColor="#E8D5B7" stopOpacity="0.6" />
+                <radialGradient id="cm1" cx="60%" cy="40%">
+                  <stop offset="0%" stopColor="#E8D5B7" stopOpacity="0.7" />
                   <stop offset="100%" stopColor="#D4A574" stopOpacity="0" />
                 </radialGradient>
               </defs>
               <path
-                d="M 400,0 Q 400,180 320,240 Q 240,290 180,250 Q 100,200 140,120 Q 200,40 320,40 Q 400,40 400,0 Z"
-                fill="url(#coffeeGrad)"
+                d="M 500,0 Q 500,220 400,300 Q 300,360 220,310 Q 120,250 170,150 Q 240,50 400,50 Q 500,50 500,0 Z"
+                fill="url(#cg1)"
               />
               <path
-                d="M 400,40 Q 350,100 290,110 Q 240,120 250,80 Q 280,50 340,45 Q 400,40 400,40 Z"
-                fill="url(#creamGrad)"
+                d="M 500,50 Q 430,130 360,140 Q 300,150 310,100 Q 350,60 420,55 Q 500,50 500,50 Z"
+                fill="url(#cm1)"
               />
             </svg>
           </div>
 
-          <div className="splash-secondary absolute bottom-0 left-0">
-            <svg
-              width="280"
-              height="280"
-              viewBox="0 0 280 280"
-              className="opacity-70"
-            >
+          {/* Bottom left coffee splash */}
+          <div
+            className="absolute bottom-0 left-0"
+            style={{
+              width: "350px",
+              height: "350px",
+              animation: "splashBottomLeft 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
+              animationDelay: "0.1s",
+            }}
+          >
+            <svg viewBox="0 0 350 350" width="350" height="350">
               <defs>
-                <radialGradient id="coffeeGrad2" cx="30%" cy="70%">
-                  <stop offset="0%" stopColor="#5C3D2E" stopOpacity="0.8" />
+                <radialGradient id="cg2" cx="30%" cy="70%">
+                  <stop offset="0%" stopColor="#5C3D2E" stopOpacity="0.85" />
                   <stop offset="100%" stopColor="#1A0E08" stopOpacity="0" />
                 </radialGradient>
               </defs>
               <path
-                d="M 0,280 Q 0,140 80,100 Q 160,60 200,140 Q 230,200 180,240 Q 100,280 0,280 Z"
-                fill="url(#coffeeGrad2)"
+                d="M 0,350 Q 0,170 100,120 Q 200,80 250,170 Q 290,250 230,300 Q 130,350 0,350 Z"
+                fill="url(#cg2)"
               />
             </svg>
           </div>
 
-          {droplets.map((d) => (
+          {/* Floating droplets */}
+          {[...Array(15)].map((_, i) => (
             <div
-              key={d.id}
+              key={i}
               className="absolute rounded-full"
               style={{
-                left: `${d.x}%`,
-                top: `${d.y}%`,
-                width: `${d.size}px`,
-                height: `${d.size}px`,
-                background:
-                  "radial-gradient(circle, #3E2723 0%, #1A0E08 60%, transparent 100%)",
-                animation: `dropletFly ${d.duration}s cubic-bezier(0.4, 0, 0.2, 1) forwards`,
-                animationDelay: `${d.delay}s`,
+                left: `${15 + (i * 6) % 70}%`,
+                top: `${15 + (i * 7) % 65}%`,
+                width: `${8 + (i % 4) * 5}px`,
+                height: `${8 + (i % 4) * 5}px`,
+                background: "radial-gradient(circle, #3E2723 0%, #1A0E08 60%, transparent 100%)",
+                animation: `dropletFly 1s cubic-bezier(0.4, 0, 0.2, 1) forwards`,
+                animationDelay: `${0.1 + i * 0.04}s`,
                 opacity: 0,
               }}
             />
           ))}
-
-          <div
-            className="splash-glow absolute inset-0 opacity-0"
-            style={{
-              background:
-                "radial-gradient(circle at 80% 20%, rgba(212,165,116,0.15) 0%, transparent 40%), radial-gradient(circle at 20% 80%, rgba(139,111,71,0.1) 0%, transparent 40%)",
-            }}
-          />
         </div>
       )}
 
-      <style jsx>{`
-        @keyframes splashEnter {
+      <style jsx global>{`
+        @keyframes splashTopRight {
           0% {
-            transform: translate(40%, -40%) scale(0.3) rotate(-15deg);
+            transform: translate(60%, -60%) scale(0.2) rotate(-30deg);
             opacity: 0;
           }
-          40% {
-            transform: translate(0%, 0%) scale(1.1) rotate(5deg);
+          30% {
+            transform: translate(10%, -10%) scale(1) rotate(0deg);
             opacity: 1;
           }
           60% {
-            transform: translate(0%, 0%) scale(1) rotate(0deg);
+            transform: translate(0%, 0%) scale(1.05) rotate(5deg);
             opacity: 1;
           }
           100% {
-            transform: translate(50%, -50%) scale(0.4) rotate(20deg);
+            transform: translate(70%, -70%) scale(0.3) rotate(30deg);
             opacity: 0;
           }
         }
 
-        @keyframes splashEnterBottom {
+        @keyframes splashBottomLeft {
           0% {
-            transform: translate(-40%, 40%) scale(0.3) rotate(15deg);
+            transform: translate(-60%, 60%) scale(0.2) rotate(30deg);
             opacity: 0;
           }
-          40% {
-            transform: translate(0%, 0%) scale(1.1) rotate(-5deg);
+          30% {
+            transform: translate(-10%, 10%) scale(1) rotate(0deg);
             opacity: 1;
           }
           60% {
-            transform: translate(0%, 0%) scale(1) rotate(0deg);
+            transform: translate(0%, 0%) scale(1.05) rotate(-5deg);
             opacity: 1;
           }
           100% {
-            transform: translate(-50%, 50%) scale(0.4) rotate(-20deg);
+            transform: translate(-70%, 70%) scale(0.3) rotate(-30deg);
             opacity: 0;
           }
         }
@@ -198,42 +182,16 @@ export default function PageTransition({
           }
           30% {
             opacity: 0.9;
-            transform: translate(20px, -10px) scale(1.2);
+            transform: translate(30px, -20px) scale(1.3);
           }
           70% {
-            opacity: 0.6;
-            transform: translate(60px, -40px) scale(0.8);
+            opacity: 0.5;
+            transform: translate(80px, -60px) scale(0.7);
           }
           100% {
-            transform: translate(120px, -80px) scale(0);
+            transform: translate(150px, -120px) scale(0);
             opacity: 0;
           }
-        }
-
-        @keyframes glowFlash {
-          0%,
-          100% {
-            opacity: 0;
-          }
-          50% {
-            opacity: 1;
-          }
-        }
-
-        .splash-main {
-          animation: splashEnter 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-          will-change: transform, opacity;
-        }
-
-        .splash-secondary {
-          animation: splashEnterBottom 1.3s cubic-bezier(0.34, 1.56, 0.64, 1)
-            forwards;
-          animation-delay: 0.1s;
-          will-change: transform, opacity;
-        }
-
-        .splash-glow {
-          animation: glowFlash 1.4s ease-in-out forwards;
         }
       `}</style>
     </>
