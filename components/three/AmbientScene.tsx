@@ -3,11 +3,6 @@
 import { useRef, useMemo, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float } from "@react-three/drei";
-import {
-  EffectComposer,
-  Bloom,
-  Vignette,
-} from "@react-three/postprocessing";
 import * as THREE from "three";
 
 function FloatingCards() {
@@ -45,11 +40,11 @@ function FloatingCards() {
             <meshStandardMaterial
               color="#2c1810"
               transparent
-              opacity={0.35}
-              roughness={0.1}
-              metalness={0.3}
+              opacity={0.4}
+              roughness={0.2}
+              metalness={0.4}
               emissive="#c8502a"
-              emissiveIntensity={0.1}
+              emissiveIntensity={0.3}
             />
           </mesh>
         </Float>
@@ -60,7 +55,7 @@ function FloatingCards() {
 
 function Dust() {
   const ref = useRef<THREE.Points>(null);
-  const count = 60;
+  const count = 80;
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
@@ -80,7 +75,7 @@ function Dust() {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <pointsMaterial size={0.025} color="#c8502a" transparent opacity={0.12} />
+      <pointsMaterial size={0.04} color="#D4A574" transparent opacity={0.5} sizeAttenuation />
     </points>
   );
 }
@@ -88,14 +83,11 @@ function Dust() {
 function Scene() {
   return (
     <>
-      <ambientLight intensity={0.1} color="#f5e6d3" />
-      <pointLight position={[2, 3, 2]} intensity={1.5} color="#c8502a" />
+      <ambientLight intensity={0.4} color="#f5e6d3" />
+      <pointLight position={[2, 3, 2]} intensity={2} color="#c8502a" />
+      <pointLight position={[-2, -2, 2]} intensity={1} color="#D4A574" />
       <FloatingCards />
       <Dust />
-      <EffectComposer>
-        <Bloom luminanceThreshold={0.3} intensity={0.8} mipmapBlur />
-        <Vignette eskil={false} offset={0.15} darkness={0.85} />
-      </EffectComposer>
     </>
   );
 }
@@ -105,8 +97,11 @@ export default function AmbientScene() {
     <Canvas
       camera={{ position: [0, 0, 8], fov: 50 }}
       dpr={[1, 1.5]}
-      gl={{ antialias: true, alpha: true }}
+      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ background: "transparent" }}
+      onCreated={({ gl }) => {
+        gl.setClearColor(0x000000, 0);
+      }}
     >
       <Suspense fallback={null}>
         <Scene />
