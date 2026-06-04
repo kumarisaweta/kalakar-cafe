@@ -30,11 +30,9 @@ export default function PageTransition({
       return;
     }
 
-    // Trigger splash
     setSplashKey((k) => k + 1);
     setShowSplash(true);
 
-    // Smooth page reveal (no harsh fade out)
     gsap.fromTo(
       container,
       {
@@ -52,16 +50,14 @@ export default function PageTransition({
       }
     );
 
-    // Hide splash after animation
     const timer = setTimeout(() => setShowSplash(false), 1500);
     return () => clearTimeout(timer);
   }, [pathname]);
 
-  // Generate random splash droplets
   const droplets = Array.from({ length: 12 }, (_, i) => ({
     id: i,
-    x: 20 + Math.random() * 60, // 20% to 80% from left
-    y: 20 + Math.random() * 60, // 20% to 80% from top
+    x: 20 + Math.random() * 60,
+    y: 20 + Math.random() * 60,
     size: 8 + Math.random() * 20,
     delay: Math.random() * 0.2,
     duration: 0.8 + Math.random() * 0.4,
@@ -73,14 +69,12 @@ export default function PageTransition({
         {children}
       </div>
 
-      {/* Subtle Coffee Splash - top right corner */}
       {showSplash && (
         <div
           key={splashKey}
           ref={splashRef}
           className="pointer-events-none fixed inset-0 z-[9997] overflow-hidden"
         >
-          {/* Main splash blob - top right */}
           <div className="splash-main absolute top-0 right-0">
             <svg
               width="400"
@@ -99,12 +93,10 @@ export default function PageTransition({
                   <stop offset="100%" stopColor="#D4A574" stopOpacity="0" />
                 </radialGradient>
               </defs>
-              {/* Organic blob shape */}
               <path
                 d="M 400,0 Q 400,180 320,240 Q 240,290 180,250 Q 100,200 140,120 Q 200,40 320,40 Q 400,40 400,0 Z"
                 fill="url(#coffeeGrad)"
               />
-              {/* Cream highlight */}
               <path
                 d="M 400,40 Q 350,100 290,110 Q 240,120 250,80 Q 280,50 340,45 Q 400,40 400,40 Z"
                 fill="url(#creamGrad)"
@@ -112,7 +104,6 @@ export default function PageTransition({
             </svg>
           </div>
 
-          {/* Bottom left small splash */}
           <div className="splash-secondary absolute bottom-0 left-0">
             <svg
               width="280"
@@ -133,7 +124,6 @@ export default function PageTransition({
             </svg>
           </div>
 
-          {/* Flying droplets */}
           {droplets.map((d) => (
             <div
               key={d.id}
@@ -152,7 +142,6 @@ export default function PageTransition({
             />
           ))}
 
-          {/* Subtle warm glow flash */}
           <div
             className="splash-glow absolute inset-0 opacity-0"
             style={{
